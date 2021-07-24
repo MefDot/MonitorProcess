@@ -12,29 +12,31 @@ namespace Monitor
     {
         static void Main(string[] args)
         {
-            Console.WriteLine( args.Length);
-            if((args.Length != 0 ) && (args.Length == 3))
-            {
-                List<string> ListProperty = new List<string>();
-                ListProperty.Add(args[0]);
-                ListProperty.Add(args[1]);
-                int CheckTime = int.Parse(args[2]);
 
-                TimerCallback timerCallback = new TimerCallback(CheckProcess);
-                Timer timer = new Timer(timerCallback, ListProperty, 0, CheckTime * 60000);
-
-                Console.WriteLine(DateTime.Now);
-
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("Error count arguments");
-            }
-          
             
+                if ((args.Length != 0) && (args.Length == 3))
+                {
+                    List<string> ListProperty = new List<string>();
+                    
+                    // Получаем имя процесса
+                    ListProperty.Add(args[0].Remove(args[0].IndexOf('.'), 4));
+                    // Получаем количество минут жизни процесса
+                    ListProperty.Add(args[1]);
+                    // Интервал проверки 
+                    int CheckTime = int.Parse(args[2]);
+                    TimerCallback timerCallback = new TimerCallback(CheckProcess);
+                    Timer timer = new Timer(timerCallback, ListProperty, 0, CheckTime * 60000);
+
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Error count arguments");
+                }
+           
         }
 
+        // Получаем время старта процесса
         static DateTime GetProcessLifeTime(string ProcessName)
         {
 
@@ -43,6 +45,9 @@ namespace Monitor
             return ProcessRuning[0].StartTime;
         }
 
+        
+
+        // Мониторим время жизни процесса и если оно равно или больше заданного то уничтожаем процесс
         static void CheckProcess(object obj)
         {
             List<string> listProp = (List<string>)obj;
@@ -58,6 +63,7 @@ namespace Monitor
                 {
                     process.Kill();
                     Console.WriteLine($"Process {listProp[0]} killed");
+                    Process.GetCurrentProcess().Kill();
                 }
                 
             } else
