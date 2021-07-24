@@ -19,7 +19,7 @@ namespace Monitor
                     List<string> ListProperty = new List<string>();
                     
                     // Получаем имя процесса
-                    ListProperty.Add(args[0].Remove(args[0].IndexOf('.'), 4));
+                    ListProperty.Add(RemoveExe(args[0]));
                     // Получаем количество минут жизни процесса
                     ListProperty.Add(args[1]);
                     // Интервал проверки 
@@ -45,7 +45,11 @@ namespace Monitor
             return ProcessRuning[0].StartTime;
         }
 
-        
+        // Удаляем из строки .exe
+        static string RemoveExe(string str)
+        {
+            return str.Remove(str.IndexOf('.'), 4);
+        }
 
         // Мониторим время жизни процесса и если оно равно или больше заданного то уничтожаем процесс
         static void CheckProcess(object obj)
